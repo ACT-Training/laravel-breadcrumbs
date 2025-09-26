@@ -10,10 +10,10 @@ class BreadcrumbsServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->mergeConfigFrom(
-            __DIR__ . '/../config/breadcrumbs.php',
-            'breadcrumbs'
-        );
+        $configPath = __DIR__ . '/../config/breadcrumbs.php';
+        if (file_exists($configPath)) {
+            $this->mergeConfigFrom($configPath, 'breadcrumbs');
+        }
 
         $this->app->singleton(Breadcrumbs::class);
     }
