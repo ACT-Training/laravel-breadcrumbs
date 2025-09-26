@@ -1,124 +1,99 @@
 <?php
 
-namespace ActTraining\LaravelBreadcrumbs\Tests\Feature;
-
 use ActTraining\LaravelBreadcrumbs\Breadcrumbs;
-use ActTraining\LaravelBreadcrumbs\Tests\TestCase;
 use Illuminate\Support\Facades\Route;
 use ReflectionClass;
 
-class BreadcrumbsComponentTest extends TestCase
-{
-    protected function setUp(): void
-    {
-        parent::setUp();
+beforeEach(function () {
+    // Clear any existing breadcrumb definitions before each test
+    $reflection = new ReflectionClass(Breadcrumbs::class);
+    $property = $reflection->getProperty('breadcrumbs');
+    $property->setAccessible(true);
+    $property->setValue(null, []);
+});
 
-        // Clear any existing breadcrumb definitions before each test
-        $reflection = new ReflectionClass(Breadcrumbs::class);
-        $property = $reflection->getProperty('breadcrumbs');
-        $property->setAccessible(true);
-        $property->setValue(null, []);
-    }
+it('renders breadcrumbs component', function () {
+    Breadcrumbs::define('dashboard', function ($trail) {
+        $trail->push('Dashboard', '/dashboard');
+    });
 
-    /** @test */
-    public function it_renders_breadcrumbs_component()
-    {
-        Breadcrumbs::define('dashboard', function ($trail) {
-            $trail->push('Dashboard', '/dashboard');
-        });
+    Breadcrumbs::define('users.index', function ($trail) {
+        $trail->parent('dashboard');
+        $trail->push('Users', '/users');
+    });
 
-        Breadcrumbs::define('users.index', function ($trail) {
-            $trail->parent('dashboard');
-            $trail->push('Users', '/users');
-        });
+    $view = $this->blade('<x-breadcrumbs route="users.index" />');
 
-        $view = $this->blade('<x-breadcrumbs route="users.index" />');
+    $view->assertSee('Dashboard');
+    $view->assertSee('Users');
+    $view->assertSee('flux:breadcrumbs');
+});
 
-        $view->assertSee('Dashboard');
-        $view->assertSee('Users');
-        $view->assertSee('breadcrumbs');
-    }
+it('generates breadcrumbs from current route', function () {
+    Route::get('/test', function () {
+        return 'test';
+    })->name('test.route');
 
-    /** @test */
-    public function it_generates_breadcrumbs_from_current_route()
-    {
-        Route::get('/test', function () {
-            return 'test';
-        })->name('test.route');
+    Breadcrumbs::define('test.route', function ($trail) {
+        $trail->push('Test Page', '/test');
+    });
 
-        Breadcrumbs::define('test.route', function ($trail) {
-            $trail->push('Test Page', '/test');
-        });
+    $this->get('/test');
 
-        $this->get('/test');
+    $view = $this->blade('<x-breadcrumbs />');
 
-        $view = $this->blade('<x-breadcrumbs />');
+    $view->assertSee('Test Page');
+});
 
-        $view->assertSee('Test Page');
-    }
+it('skips single item breadcrumbs by default', function () {
+    Breadcrumbs::define('single', function ($trail) {
+        $trail->push('Single Item', '/single');
+    });
 
-    /** @test */
-    public function it_skips_single_item_breadcrumbs_by_default()
-    {
-        Breadcrumbs::define('single', function ($trail) {
-            $trail->push('Single Item', '/single');
-        });
+    $view = $this->blade('<x-breadcrumbs route="single" />');
 
-        $view = $this->blade('<x-breadcrumbs route="single" />');
+    $view->assertDontSee('Single Item');
+});
 
-        $view->assertDontSee('Single Item');
-    }
+it('can show single item breadcrumbs when configured', function () {
+    config(['breadcrumbs.skip_single_item' => false]);
 
-    /** @test */
-    public function it_can_show_single_item_breadcrumbs_when_configured()
-    {
-        config(['breadcrumbs.skip_single_item' => false]);
+    Breadcrumbs::define('single', function ($trail) {
+        $trail->push('Single Item', '/single');
+    });
 
-        Breadcrumbs::define('single', function ($trail) {
-            $trail->push('Single Item', '/single');
-        });
+    $view = $this->blade('<x-breadcrumbs route="single" />');
 
-        $view = $this->blade('<x-breadcrumbs route="single" />');
+    $view->assertSee('Single Item');
+});
 
-        $view->assertSee('Single Item');
-    }
+it('renders dashboard breadcrumb with house icon', function () {
+    config(['breadcrumbs.skip_single_item' => false]);
 
-    /** @test */
-    public function it_applies_custom_css_classes()
-    {
-        config([
-            'breadcrumbs.classes.wrapper' => 'custom-breadcrumbs',
-            'breadcrumbs.skip_single_item' => false,
-        ]);
+    Breadcrumbs::define('dashboard', function ($trail) {
+        $trail->push('Dashboard', '/dashboard');
+    });
 
-        Breadcrumbs::define('test', function ($trail) {
-            $trail->push('Test', '/test');
-        });
+    $view = $this->blade('<x-breadcrumbs route="dashboard" />');
 
-        $view = $this->blade('<x-breadcrumbs route="test" />');
+    $view->assertSee('flux:icon');
+    $view->assertSee('house');
+    $view->assertSee('text-orange-500');
+});
 
-        $view->assertSee('custom-breadcrumbs');
-    }
+it('renders multiple breadcrumbs with flux components', function () {
+    Breadcrumbs::define('dashboard', function ($trail) {
+        $trail->push('Dashboard', '/dashboard');
+    });
 
-    /** @test */
-    public function it_uses_custom_separator()
-    {
-        config([
-            'breadcrumbs.separator' => '>',
-            'breadcrumbs.skip_single_item' => false,
-        ]);
+    Breadcrumbs::define('users.show', function ($trail) {
+        $trail->parent('dashboard');
+        $trail->push('John Doe', '/users/1');
+    });
 
-        Breadcrumbs::define('parent', function ($trail) {
-            $trail->push('Parent', '/parent');
-        });
+    $view = $this->blade('<x-breadcrumbs route="users.show" />');
 
-        Breadcrumbs::define('child', function ($trail) {
-            $trail->parent('parent');
-            $trail->push('Child', '/child');
-        });
-
-        $view = $this->blade('<x-breadcrumbs route="child" />');
-
-        $view->assertSee('>');
-    }
-}
+    $view->assertSee('flux:breadcrumbs.item');
+    $view->assertSee('house');
+    $view->assertSee('John Doe');
+});

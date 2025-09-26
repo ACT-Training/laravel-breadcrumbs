@@ -1,25 +1,32 @@
 @if (count($breadcrumbs) > 0)
-    <nav {{ $attributes->merge(['class' => $classes['wrapper'] ?? 'breadcrumbs']) }} aria-label="Breadcrumb">
-        <ol class="{{ $classes['list'] ?? 'breadcrumb-list' }}">
+    <div {{ $attributes->merge(['class' => 'mt-1 flex items-center']) }}>
+        <flux:breadcrumbs class="text-sm font-medium sm:text-lg">
             @foreach ($breadcrumbs as $breadcrumb)
-                <li class="{{ $classes['item'] ?? 'breadcrumb-item' }}">
-                    @if ($breadcrumb->url && !$loop->last)
-                        <a href="{{ $breadcrumb->url }}" class="{{ $classes['link'] ?? 'breadcrumb-link' }}">
-                            {{ $breadcrumb->title }}
-                        </a>
+                @if ($breadcrumb->url && !$loop->last)
+                    @if ($breadcrumb->title === 'Dashboard' && $loop->first)
+                        <flux:breadcrumbs.item href="{{ $breadcrumb->url }}">
+                            <flux:icon icon="house" class="size-5 !text-orange-500 hover:!text-orange-600" />
+                        </flux:breadcrumbs.item>
                     @else
-                        <span class="{{ $classes['active'] ?? 'breadcrumb-active' }}" aria-current="page">
+                        <flux:breadcrumbs.item
+                            href="{{ $breadcrumb->url }}"
+                            class="!text-sm !text-zinc-500 hover:!text-zinc-700 sm:!text-lg dark:!text-zinc-400 dark:hover:!text-zinc-300"
+                        >
                             {{ $breadcrumb->title }}
-                        </span>
+                        </flux:breadcrumbs.item>
                     @endif
-
-                    @if (!$loop->last)
-                        <span class="{{ $classes['separator'] ?? 'breadcrumb-separator' }}" aria-hidden="true">
-                            {{ $separator }}
-                        </span>
+                @else
+                    @if ($breadcrumb->title === 'Dashboard' && $loop->first)
+                        <flux:breadcrumbs.item class="!text-orange-500">
+                            <flux:icon icon="house" class="size-5" />
+                        </flux:breadcrumbs.item>
+                    @else
+                        <flux:breadcrumbs.item class="!text-sm !text-zinc-400 sm:!text-lg dark:!text-zinc-500">
+                            {{ $breadcrumb->title }}
+                        </flux:breadcrumbs.item>
                     @endif
-                </li>
+                @endif
             @endforeach
-        </ol>
-    </nav>
+        </flux:breadcrumbs>
+    </div>
 @endif

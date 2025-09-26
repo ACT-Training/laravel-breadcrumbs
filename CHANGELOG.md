@@ -8,8 +8,9 @@ All notable changes to `laravel-breadcrumbs` will be documented in this file.
 - Basic breadcrumb definition and generation
 - Support for nested breadcrumbs with parent relationships
 - Automatic breadcrumb generation from current route
-- Customizable views and CSS classes
+- Built-in FluxUI component integration
+- Special Dashboard icon support with house icon
 - Artisan command for generating breadcrumb definitions
-- Framework-agnostic HTML output
-- Comprehensive test coverage
-- Laravel 10, 11, and 12 support
+- Comprehensive Pest test coverage
+- Laravel 12+ only support
+- PHP 8.2+ requirement

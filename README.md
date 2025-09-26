@@ -1,6 +1,6 @@
 # Laravel Breadcrumbs
 
-A simple and flexible breadcrumb package for Laravel applications that provides an easy way to manage and display breadcrumb navigation.
+A simple and flexible breadcrumb package for Laravel 12+ applications that provides an easy way to manage and display breadcrumb navigation using FluxUI components.
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/act-training/laravel-breadcrumbs.svg?style=flat-square)](https://packagist.org/packages/act-training/laravel-breadcrumbs)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/act-training/laravel-breadcrumbs/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/act-training/laravel-breadcrumbs/actions?query=workflow%3Arun-tests+branch%3Amain)
@@ -11,10 +11,17 @@ A simple and flexible breadcrumb package for Laravel applications that provides 
 - Simple and intuitive breadcrumb definition
 - Support for nested breadcrumbs with parent relationships
 - Automatic breadcrumb generation from current route
-- Customizable views and CSS classes
+- Built-in FluxUI component integration
+- Special Dashboard icon support
 - Artisan command for generating breadcrumb definitions
-- Framework-agnostic HTML output
-- Full test coverage
+- Full Pest test coverage
+- Laravel 12+ only support
+
+## Requirements
+
+- PHP 8.2+
+- Laravel 12+
+- FluxUI (Livewire Flux)
 
 ## Installation
 
@@ -25,6 +32,8 @@ composer require act-training/laravel-breadcrumbs
 ```
 
 The package will automatically register its service provider.
+
+**Note:** This package requires FluxUI to be installed and configured in your Laravel application.
 
 You can publish the config file with:
 
@@ -137,45 +146,19 @@ php artisan vendor:publish --tag="breadcrumbs-views"
 
 The default view will be published to `resources/views/vendor/breadcrumbs/breadcrumbs.blade.php`.
 
-### CSS Styling
+### FluxUI Integration
 
-The package generates semantic HTML with configurable CSS classes. Here's a basic CSS example:
+The package uses FluxUI components for rendering breadcrumbs:
 
-```css
-.breadcrumbs {
-    margin-bottom: 1rem;
-}
+- `<flux:breadcrumbs>` for the main breadcrumb container
+- `<flux:breadcrumbs.item>` for individual breadcrumb items
+- `<flux:icon icon="house">` for the special Dashboard icon
 
-.breadcrumb-list {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.breadcrumb-item {
-    display: flex;
-    align-items: center;
-}
-
-.breadcrumb-link {
-    color: #3b82f6;
-    text-decoration: none;
-}
-
-.breadcrumb-link:hover {
-    text-decoration: underline;
-}
-
-.breadcrumb-active {
-    color: #6b7280;
-}
-
-.breadcrumb-separator {
-    margin: 0 0.5rem;
-    color: #9ca3af;
-}
-```
+The default styling includes:
+- Orange accent color for Dashboard items
+- Responsive text sizing
+- Dark mode support
+- Hover states
 
 ## Advanced Usage
 
@@ -202,61 +185,38 @@ Breadcrumbs::define('posts.show', function ($trail, $post) {
 });
 ```
 
-### Using with Different UI Frameworks
+### Dashboard Icon Support
 
-The package is framework-agnostic, but you can easily integrate it with popular CSS frameworks:
+The package includes special handling for Dashboard breadcrumbs:
 
-#### Bootstrap 5
-```blade
-@if(count($breadcrumbs) > 1)
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        @foreach($breadcrumbs as $breadcrumb)
-            <li class="breadcrumb-item {{ $loop->last ? 'active' : '' }}">
-                @if($breadcrumb->url && !$loop->last)
-                    <a href="{{ $breadcrumb->url }}">{{ $breadcrumb->title }}</a>
-                @else
-                    {{ $breadcrumb->title }}
-                @endif
-            </li>
-        @endforeach
-    </ol>
-</nav>
-@endif
+```php
+// When you define a breadcrumb with the title 'Dashboard'
+Breadcrumbs::define('dashboard', function ($trail) {
+    $trail->push('Dashboard', route('dashboard'));
+});
 ```
 
-#### Tailwind CSS
+It will automatically render with a house icon instead of text:
+
 ```blade
-@if(count($breadcrumbs) > 1)
-<nav class="flex" aria-label="Breadcrumb">
-    <ol class="inline-flex items-center space-x-1 md:space-x-3">
-        @foreach($breadcrumbs as $breadcrumb)
-            <li class="inline-flex items-center">
-                @if(!$loop->first)
-                    <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                    </svg>
-                @endif
-                @if($breadcrumb->url && !$loop->last)
-                    <a href="{{ $breadcrumb->url }}" class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2">
-                        {{ $breadcrumb->title }}
-                    </a>
-                @else
-                    <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">
-                        {{ $breadcrumb->title }}
-                    </span>
-                @endif
-            </li>
-        @endforeach
-    </ol>
-</nav>
-@endif
+<!-- Automatically renders as -->
+<flux:breadcrumbs.item href="/dashboard">
+    <flux:icon icon="house" class="size-5 !text-orange-500 hover:!text-orange-600" />
+</flux:breadcrumbs.item>
 ```
 
 ## Testing
 
+The package uses Pest for testing:
+
 ```bash
 composer test
+```
+
+Or run Pest directly:
+
+```bash
+vendor/bin/pest
 ```
 
 ## Changelog

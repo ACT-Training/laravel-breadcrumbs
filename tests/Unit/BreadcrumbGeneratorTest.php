@@ -1,67 +1,53 @@
 <?php
 
-namespace ActTraining\LaravelBreadcrumbs\Tests\Unit;
-
 use ActTraining\LaravelBreadcrumbs\BreadcrumbGenerator;
-use ActTraining\LaravelBreadcrumbs\Tests\TestCase;
 
-class BreadcrumbGeneratorTest extends TestCase
-{
-    /** @test */
-    public function it_can_push_breadcrumbs()
-    {
-        $generator = new BreadcrumbGenerator;
+it('can push breadcrumbs', function () {
+    $generator = new BreadcrumbGenerator;
 
-        $generator->push('Home', '/home');
-        $generator->push('About', '/about');
+    $generator->push('Home', '/home');
+    $generator->push('About', '/about');
 
-        $breadcrumbs = $generator->getBreadcrumbs();
+    $breadcrumbs = $generator->getBreadcrumbs();
 
-        $this->assertCount(2, $breadcrumbs);
-        $this->assertEquals('Home', $breadcrumbs[0]->title);
-        $this->assertEquals('/home', $breadcrumbs[0]->url);
-        $this->assertEquals('About', $breadcrumbs[1]->title);
-        $this->assertEquals('/about', $breadcrumbs[1]->url);
-    }
+    expect($breadcrumbs)->toHaveCount(2);
+    expect($breadcrumbs[0]->title)->toBe('Home');
+    expect($breadcrumbs[0]->url)->toBe('/home');
+    expect($breadcrumbs[1]->title)->toBe('About');
+    expect($breadcrumbs[1]->url)->toBe('/about');
+});
 
-    /** @test */
-    public function it_can_push_breadcrumbs_without_urls()
-    {
-        $generator = new BreadcrumbGenerator;
+it('can push breadcrumbs without urls', function () {
+    $generator = new BreadcrumbGenerator;
 
-        $generator->push('Current Page', null);
+    $generator->push('Current Page', null);
 
-        $breadcrumbs = $generator->getBreadcrumbs();
+    $breadcrumbs = $generator->getBreadcrumbs();
 
-        $this->assertCount(1, $breadcrumbs);
-        $this->assertEquals('Current Page', $breadcrumbs[0]->title);
-        $this->assertNull($breadcrumbs[0]->url);
-    }
+    expect($breadcrumbs)->toHaveCount(1);
+    expect($breadcrumbs[0]->title)->toBe('Current Page');
+    expect($breadcrumbs[0]->url)->toBeNull();
+});
 
-    /** @test */
-    public function it_can_count_breadcrumbs()
-    {
-        $generator = new BreadcrumbGenerator;
+it('can count breadcrumbs', function () {
+    $generator = new BreadcrumbGenerator;
 
-        $this->assertEquals(0, $generator->count());
-        $this->assertTrue($generator->isEmpty());
+    expect($generator->count())->toBe(0);
+    expect($generator->isEmpty())->toBeTrue();
 
-        $generator->push('Test', '/test');
+    $generator->push('Test', '/test');
 
-        $this->assertEquals(1, $generator->count());
-        $this->assertFalse($generator->isEmpty());
-    }
+    expect($generator->count())->toBe(1);
+    expect($generator->isEmpty())->toBeFalse();
+});
 
-    /** @test */
-    public function it_can_clear_breadcrumbs()
-    {
-        $generator = new BreadcrumbGenerator;
+it('can clear breadcrumbs', function () {
+    $generator = new BreadcrumbGenerator;
 
-        $generator->push('Test', '/test');
-        $this->assertEquals(1, $generator->count());
+    $generator->push('Test', '/test');
+    expect($generator->count())->toBe(1);
 
-        $generator->clear();
-        $this->assertEquals(0, $generator->count());
-        $this->assertTrue($generator->isEmpty());
-    }
-}
+    $generator->clear();
+    expect($generator->count())->toBe(0);
+    expect($generator->isEmpty())->toBeTrue();
+});
