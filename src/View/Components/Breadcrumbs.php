@@ -12,6 +12,8 @@ class Breadcrumbs extends Component
     public string $separator;
     public bool $skipSingleItem;
 
+    public bool $fromCurrentRoute = false;
+
     public function __construct(
         ?string $route = null,
         array $params = [],
@@ -20,6 +22,7 @@ class Breadcrumbs extends Component
         ?string $separator = null,
         ?bool $skipSingleItem = null
     ) {
+        $this->fromCurrentRoute = $route === null;
         $this->breadcrumbs = $this->generateBreadcrumbs($route, $params);
         $this->classes = array_merge(config('breadcrumbs.classes', []), $classes);
         $this->separator = $separator ?? config('breadcrumbs.separator', '/');
@@ -28,7 +31,7 @@ class Breadcrumbs extends Component
 
     public function render()
     {
-        if ($this->skipSingleItem && count($this->breadcrumbs) <= 1) {
+        if ($this->skipSingleItem && ! $this->fromCurrentRoute && count($this->breadcrumbs) <= 1) {
             return '';
         }
 
@@ -37,7 +40,7 @@ class Breadcrumbs extends Component
 
     public function shouldRender(): bool
     {
-        if ($this->skipSingleItem && count($this->breadcrumbs) <= 1) {
+        if ($this->skipSingleItem && ! $this->fromCurrentRoute && count($this->breadcrumbs) <= 1) {
             return false;
         }
 

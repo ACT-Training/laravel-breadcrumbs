@@ -2,13 +2,11 @@
 
 use ActTraining\LaravelBreadcrumbs\Breadcrumbs;
 use Illuminate\Support\Facades\Route;
-use ReflectionClass;
 
 beforeEach(function () {
     // Clear any existing breadcrumb definitions before each test
     $reflection = new ReflectionClass(Breadcrumbs::class);
     $property = $reflection->getProperty('breadcrumbs');
-    $property->setAccessible(true);
     $property->setValue(null, []);
 });
 

@@ -25,7 +25,7 @@ class Breadcrumbs
 
     public static function generateFromRoute(): array
     {
-        $currentRoute = request()->route();
+        $currentRoute = \Illuminate\Support\Facades\Route::current();
 
         if (! $currentRoute || ! $currentRoute->getName()) {
             return [];

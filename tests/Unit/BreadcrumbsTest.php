@@ -1,14 +1,11 @@
 <?php
 
-use ActTraining\LaravelBreadcrumbs\BreadcrumbGenerator;
 use ActTraining\LaravelBreadcrumbs\Breadcrumbs;
-use ReflectionClass;
 
 beforeEach(function () {
     // Clear any existing breadcrumb definitions before each test
     $reflection = new ReflectionClass(Breadcrumbs::class);
     $property = $reflection->getProperty('breadcrumbs');
-    $property->setAccessible(true);
     $property->setValue(null, []);
 });
 
@@ -19,9 +16,9 @@ it('can define and generate simple breadcrumbs', function () {
 
     $breadcrumbs = Breadcrumbs::generate('dashboard');
 
-    expect($breadcrumbs)->toHaveCount(1);
-    expect($breadcrumbs[0]->title)->toBe('Dashboard');
-    expect($breadcrumbs[0]->url)->toBe('/dashboard');
+    expect($breadcrumbs)->toHaveCount(1)
+        ->and($breadcrumbs[0]->title)->toBe('Dashboard')
+        ->and($breadcrumbs[0]->url)->toBe('/dashboard');
 });
 
 it('can generate breadcrumbs with parent relationships', function () {
@@ -36,11 +33,11 @@ it('can generate breadcrumbs with parent relationships', function () {
 
     $breadcrumbs = Breadcrumbs::generate('users.index');
 
-    expect($breadcrumbs)->toHaveCount(2);
-    expect($breadcrumbs[0]->title)->toBe('Dashboard');
-    expect($breadcrumbs[0]->url)->toBe('/dashboard');
-    expect($breadcrumbs[1]->title)->toBe('Users');
-    expect($breadcrumbs[1]->url)->toBe('/users');
+    expect($breadcrumbs)->toHaveCount(2)
+        ->and($breadcrumbs[0]->title)->toBe('Dashboard')
+        ->and($breadcrumbs[0]->url)->toBe('/dashboard')
+        ->and($breadcrumbs[1]->title)->toBe('Users')
+        ->and($breadcrumbs[1]->url)->toBe('/users');
 });
 
 it('can generate breadcrumbs with parameters', function () {
@@ -62,11 +59,11 @@ it('can generate breadcrumbs with parameters', function () {
 
     $breadcrumbs = Breadcrumbs::generate('users.show', $user);
 
-    expect($breadcrumbs)->toHaveCount(3);
-    expect($breadcrumbs[0]->title)->toBe('Dashboard');
-    expect($breadcrumbs[1]->title)->toBe('Users');
-    expect($breadcrumbs[2]->title)->toBe('John Doe');
-    expect($breadcrumbs[2]->url)->toBe('/users/1');
+    expect($breadcrumbs)->toHaveCount(3)
+        ->and($breadcrumbs[0]->title)->toBe('Dashboard')
+        ->and($breadcrumbs[1]->title)->toBe('Users')
+        ->and($breadcrumbs[2]->title)->toBe('John Doe')
+        ->and($breadcrumbs[2]->url)->toBe('/users/1');
 });
 
 it('can generate breadcrumbs with null urls', function () {
@@ -81,11 +78,11 @@ it('can generate breadcrumbs with null urls', function () {
 
     $breadcrumbs = Breadcrumbs::generate('users.create');
 
-    expect($breadcrumbs)->toHaveCount(2);
-    expect($breadcrumbs[0]->title)->toBe('Dashboard');
-    expect($breadcrumbs[0]->url)->toBe('/dashboard');
-    expect($breadcrumbs[1]->title)->toBe('Create User');
-    expect($breadcrumbs[1]->url)->toBeNull();
+    expect($breadcrumbs)->toHaveCount(2)
+        ->and($breadcrumbs[0]->title)->toBe('Dashboard')
+        ->and($breadcrumbs[0]->url)->toBe('/dashboard')
+        ->and($breadcrumbs[1]->title)->toBe('Create User')
+        ->and($breadcrumbs[1]->url)->toBeNull();
 });
 
 it('returns empty array for undefined routes', function () {
@@ -99,8 +96,8 @@ it('can check if breadcrumb exists', function () {
         $trail->push('Test', '/test');
     });
 
-    expect(Breadcrumbs::exists('test.route'))->toBeTrue();
-    expect(Breadcrumbs::exists('nonexistent.route'))->toBeFalse();
+    expect(Breadcrumbs::exists('test.route'))->toBeTrue()
+        ->and(Breadcrumbs::exists('nonexistent.route'))->toBeFalse();
 });
 
 it('can forget breadcrumb definitions', function () {
@@ -124,13 +121,13 @@ it('can clear all breadcrumb definitions', function () {
         $trail->push('Test 2', '/test2');
     });
 
-    expect(Breadcrumbs::exists('test1'))->toBeTrue();
-    expect(Breadcrumbs::exists('test2'))->toBeTrue();
+    expect(Breadcrumbs::exists('test1'))->toBeTrue()
+        ->and(Breadcrumbs::exists('test2'))->toBeTrue();
 
     Breadcrumbs::clear();
 
-    expect(Breadcrumbs::exists('test1'))->toBeFalse();
-    expect(Breadcrumbs::exists('test2'))->toBeFalse();
+    expect(Breadcrumbs::exists('test1'))->toBeFalse()
+        ->and(Breadcrumbs::exists('test2'))->toBeFalse();
 });
 
 it('can get all breadcrumb definitions', function () {
@@ -144,7 +141,7 @@ it('can get all breadcrumb definitions', function () {
 
     $all = Breadcrumbs::all();
 
-    expect($all)->toHaveKey('test1');
-    expect($all)->toHaveKey('test2');
-    expect($all)->toHaveCount(2);
+    expect($all)->toHaveKey('test1')
+        ->and($all)->toHaveKey('test2')
+        ->and($all)->toHaveCount(2);
 });

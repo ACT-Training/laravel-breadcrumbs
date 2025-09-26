@@ -10,11 +10,11 @@ it('can push breadcrumbs', function () {
 
     $breadcrumbs = $generator->getBreadcrumbs();
 
-    expect($breadcrumbs)->toHaveCount(2);
-    expect($breadcrumbs[0]->title)->toBe('Home');
-    expect($breadcrumbs[0]->url)->toBe('/home');
-    expect($breadcrumbs[1]->title)->toBe('About');
-    expect($breadcrumbs[1]->url)->toBe('/about');
+    expect($breadcrumbs)->toHaveCount(2)
+        ->and($breadcrumbs[0]->title)->toBe('Home')
+        ->and($breadcrumbs[0]->url)->toBe('/home')
+        ->and($breadcrumbs[1]->title)->toBe('About')
+        ->and($breadcrumbs[1]->url)->toBe('/about');
 });
 
 it('can push breadcrumbs without urls', function () {
@@ -24,21 +24,21 @@ it('can push breadcrumbs without urls', function () {
 
     $breadcrumbs = $generator->getBreadcrumbs();
 
-    expect($breadcrumbs)->toHaveCount(1);
-    expect($breadcrumbs[0]->title)->toBe('Current Page');
-    expect($breadcrumbs[0]->url)->toBeNull();
+    expect($breadcrumbs)->toHaveCount(1)
+        ->and($breadcrumbs[0]->title)->toBe('Current Page')
+        ->and($breadcrumbs[0]->url)->toBeNull();
 });
 
 it('can count breadcrumbs', function () {
     $generator = new BreadcrumbGenerator;
 
-    expect($generator->count())->toBe(0);
-    expect($generator->isEmpty())->toBeTrue();
+    expect($generator->count())->toBe(0)
+        ->and($generator->isEmpty())->toBeTrue();
 
     $generator->push('Test', '/test');
 
-    expect($generator->count())->toBe(1);
-    expect($generator->isEmpty())->toBeFalse();
+    expect($generator->count())->toBe(1)
+        ->and($generator->isEmpty())->toBeFalse();
 });
 
 it('can clear breadcrumbs', function () {
@@ -48,6 +48,6 @@ it('can clear breadcrumbs', function () {
     expect($generator->count())->toBe(1);
 
     $generator->clear();
-    expect($generator->count())->toBe(0);
-    expect($generator->isEmpty())->toBeTrue();
+    expect($generator->count())->toBe(0)
+        ->and($generator->isEmpty())->toBeTrue();
 });

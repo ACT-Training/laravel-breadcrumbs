@@ -6,6 +6,7 @@
                     @if ($breadcrumb->title === 'Dashboard' && $loop->first)
                         <flux:breadcrumbs.item href="{{ $breadcrumb->url }}">
                             <flux:icon icon="house" class="size-5 !text-orange-500 hover:!text-orange-600" />
+                            {{ $breadcrumb->title }}
                         </flux:breadcrumbs.item>
                     @else
                         <flux:breadcrumbs.item
@@ -19,6 +20,7 @@
                     @if ($breadcrumb->title === 'Dashboard' && $loop->first)
                         <flux:breadcrumbs.item class="!text-orange-500">
                             <flux:icon icon="house" class="size-5" />
+                            {{ $breadcrumb->title }}
                         </flux:breadcrumbs.item>
                     @else
                         <flux:breadcrumbs.item class="!text-sm !text-zinc-400 sm:!text-lg dark:!text-zinc-500">
