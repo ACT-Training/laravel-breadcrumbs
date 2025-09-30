@@ -22,7 +22,7 @@ it('renders breadcrumbs component', function () {
 
     $view = $this->blade('<x-breadcrumbs route="users.index" />');
 
-    $view->assertSee('Dashboard');
+    $view->assertSee('house'); // Should see the house icon for Dashboard
     $view->assertSee('Users');
     $view->assertSee('flux:breadcrumbs');
 });
@@ -94,4 +94,93 @@ it('renders multiple breadcrumbs with flux components', function () {
     $view->assertSee('flux:breadcrumbs.item');
     $view->assertSee('house');
     $view->assertSee('John Doe');
+});
+
+it('respects home_display config set to text', function () {
+    config(['breadcrumbs.home_display' => 'text']);
+    config(['breadcrumbs.skip_single_item' => false]);
+
+    Breadcrumbs::define('dashboard', function ($trail) {
+        $trail->push('Dashboard', '/dashboard');
+    });
+
+    $view = $this->blade('<x-breadcrumbs route="dashboard" />');
+
+    $view->assertSee('Dashboard');
+    $view->assertDontSee('flux:icon');
+});
+
+it('respects home_display config set to both', function () {
+    config(['breadcrumbs.home_display' => 'both']);
+    config(['breadcrumbs.skip_single_item' => false]);
+
+    Breadcrumbs::define('dashboard', function ($trail) {
+        $trail->push('Dashboard', '/dashboard');
+    });
+
+    $view = $this->blade('<x-breadcrumbs route="dashboard" />');
+
+    $view->assertSee('Dashboard');
+    $view->assertSee('flux:icon');
+    $view->assertSee('house');
+});
+
+it('respects home_display config set to icon', function () {
+    config(['breadcrumbs.home_display' => 'icon']);
+    config(['breadcrumbs.skip_single_item' => false]);
+
+    Breadcrumbs::define('dashboard', function ($trail) {
+        $trail->push('Dashboard', '/dashboard');
+    });
+
+    $view = $this->blade('<x-breadcrumbs route="dashboard" />');
+
+    $view->assertSee('flux:icon');
+    $view->assertSee('house');
+    $view->assertDontSee('Dashboard');
+});
+
+it('respects custom home_icon config', function () {
+    config(['breadcrumbs.home_icon' => 'home']);
+    config(['breadcrumbs.skip_single_item' => false]);
+
+    Breadcrumbs::define('dashboard', function ($trail) {
+        $trail->push('Dashboard', '/dashboard');
+    });
+
+    $view = $this->blade('<x-breadcrumbs route="dashboard" />');
+
+    $view->assertSee('flux:icon');
+    $view->assertSee('home');
+    $view->assertDontSee('house');
+});
+
+it('respects custom home_route config', function () {
+    config(['breadcrumbs.home_route' => 'home']);
+    config(['breadcrumbs.skip_single_item' => false]);
+
+    Breadcrumbs::define('home', function ($trail) {
+        $trail->push('Home', '/home');
+    });
+
+    $view = $this->blade('<x-breadcrumbs route="home" />');
+
+    $view->assertSee('flux:icon');
+    $view->assertSee('house');
+    $view->assertSee('text-orange-500');
+});
+
+it('does not apply home styling to non-home routes', function () {
+    config(['breadcrumbs.home_route' => 'dashboard']);
+    config(['breadcrumbs.skip_single_item' => false]);
+
+    Breadcrumbs::define('about', function ($trail) {
+        $trail->push('About', '/about');
+    });
+
+    $view = $this->blade('<x-breadcrumbs route="about" />');
+
+    $view->assertDontSee('flux:icon');
+    $view->assertDontSee('house');
+    $view->assertSee('About');
 });

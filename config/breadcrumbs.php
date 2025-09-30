@@ -82,4 +82,43 @@ return [
     */
 
     'skip_single_item' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Home Route
+    |--------------------------------------------------------------------------
+    |
+    | The route name that represents the home/root page of your application.
+    | This route will be displayed with special styling and optionally with
+    | a house icon. Commonly set to 'dashboard', 'home', or 'index'.
+    |
+    */
+
+    'home_route' => 'dashboard',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Home Display Style
+    |--------------------------------------------------------------------------
+    |
+    | Controls how the home breadcrumb is displayed. Options:
+    | - 'icon' : Shows only the house icon
+    | - 'text' : Shows only the text label
+    | - 'both' : Shows both icon and text label
+    |
+    */
+
+    'home_display' => 'icon',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Home Icon
+    |--------------------------------------------------------------------------
+    |
+    | The icon to use for the home breadcrumb. This should be a valid
+    | FluxUI icon name. Common options: 'house', 'home', 'squares-2x2'
+    |
+    */
+
+    'home_icon' => 'house',
 ];

@@ -121,10 +121,19 @@ The package comes with a configuration file that allows you to customize various
 
 ```php
 return [
+    // Path to breadcrumb definitions file (defaults to routes/breadcrumbs.php if null)
     'definitions_file' => base_path('routes/breadcrumbs.php'),
+
+    // Default view for rendering breadcrumbs
     'view' => 'breadcrumbs::breadcrumbs',
+
+    // Hide breadcrumbs when only one item exists
     'skip_single_item' => true,
+
+    // Separator character between breadcrumb items
     'separator' => '/',
+
+    // CSS classes for breadcrumb elements
     'classes' => [
         'wrapper' => 'breadcrumbs',
         'list' => 'breadcrumb-list',
@@ -133,6 +142,15 @@ return [
         'active' => 'breadcrumb-active',
         'separator' => 'breadcrumb-separator',
     ],
+
+    // The route name that represents home (e.g., 'dashboard', 'home', 'index')
+    'home_route' => 'dashboard',
+
+    // How to display the home breadcrumb: 'icon', 'text', or 'both'
+    'home_display' => 'icon',
+
+    // The FluxUI icon to use for home (e.g., 'house', 'home', 'squares-2x2')
+    'home_icon' => 'house',
 ];
 ```
 
@@ -185,18 +203,18 @@ Breadcrumbs::define('posts.show', function ($trail, $post) {
 });
 ```
 
-### Dashboard Icon Support
+### Home/Dashboard Icon Support
 
-The package includes special handling for Dashboard breadcrumbs:
+The package includes special handling for the home breadcrumb, which is configurable:
 
 ```php
-// When you define a breadcrumb with the title 'Dashboard'
+// Define your home breadcrumb (defaults to 'dashboard')
 Breadcrumbs::define('dashboard', function ($trail) {
     $trail->push('Dashboard', route('dashboard'));
 });
 ```
 
-It will automatically render with a house icon instead of text:
+By default, it renders with a house icon:
 
 ```blade
 <!-- Automatically renders as -->
@@ -204,6 +222,28 @@ It will automatically render with a house icon instead of text:
     <flux:icon icon="house" class="size-5 !text-orange-500 hover:!text-orange-600" />
 </flux:breadcrumbs.item>
 ```
+
+#### Customizing Home Display
+
+You can customize how the home breadcrumb appears using the configuration options:
+
+```php
+// config/breadcrumbs.php
+
+// Change which route is considered "home"
+'home_route' => 'home', // or 'dashboard', 'index', etc.
+
+// Control the display style
+'home_display' => 'icon',  // Options: 'icon', 'text', 'both'
+
+// Change the icon used
+'home_icon' => 'house',    // Options: 'house', 'home', 'squares-2x2', or any FluxUI icon
+```
+
+**Display Options:**
+- `'icon'` - Shows only the icon (default)
+- `'text'` - Shows only the text label
+- `'both'` - Shows both icon and text label
 
 ## Testing
 
