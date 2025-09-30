@@ -44,10 +44,20 @@ class BreadcrumbsServiceProvider extends ServiceProvider
 
     protected function loadBreadcrumbDefinitions(): void
     {
-        $breadcrumbsFile = config('breadcrumbs.definitions_file', base_path('routes/breadcrumbs.php'));
+        $breadcrumbsFile = config('breadcrumbs.definitions_file');
+
+        // Skip loading if explicitly set to false
+        if ($breadcrumbsFile === false) {
+            return;
+        }
+
+        // Default to routes/breadcrumbs.php if not set or null
+        if ($breadcrumbsFile === null) {
+            $breadcrumbsFile = base_path('routes/breadcrumbs.php');
+        }
 
         if ($breadcrumbsFile && file_exists($breadcrumbsFile)) {
-            require_once $breadcrumbsFile;
+            require $breadcrumbsFile;
         }
     }
 }

@@ -9,6 +9,7 @@ return [
     | This option controls the default location of your breadcrumb definitions
     | file. You can change this to any location within your application.
     | If null, the package will look for routes/breadcrumbs.php.
+    | Set to false to disable loading a definition file entirely.
     |
     */
 
