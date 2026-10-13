@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-breadcrumbs` will be documented in this file.
 
+## 1.0.2 - Unreleased
+
+- Support Laravel 13 alongside Laravel 12 (Laravel 13 needs PHP 8.3+)
+- Allow Pest 4 and Orchestra Testbench 11 for development
+- Test against Laravel 13 in CI
+
 ## 1.0.0 - 2025-09-26
 
 - Initial release
